@@ -2,9 +2,67 @@
 <html>
   <head>
     <title>MyHackathon</title>
+
+    <script>
+      window.onload = function() {
+              document.getElementById("get_radar").addEventListener('click', function(){
+                      let dict = {};
+                      let cur_name = '';
+                      for (i of document.getElementById("specialisations_box").children) {
+                              if (i.nodeName.toLowerCase() == "input" && i.getAttribute("type") == "text")
+                                cur_name = i.value;
+                              if (i.nodeName.toLowerCase() == "input" && i.getAttribute("type") == "number")
+                                dict[cur_name] = i.value;
+                            }
+                      console.log(dict);
+                      location.replace("radar_chart?data=" + JSON.stringify(dict));
+                    });
+              document.getElementById("add_more").addEventListener('click', function(){
+                      let newline = document.createElement("br");
+
+                      let label = document.createElement("label");
+                      label.innerText = "Specialisation";
+
+                      let textbox = document.createElement("input");
+                      textbox.setAttribute("type", "text");
+                      document.getElementById("specialisations_box").appendChild(label);
+                      document.getElementById("specialisations_box").appendChild(textbox);
+                      document.getElementById("specialisations_box").appendChild(newline.cloneNode());
+                      document.getElementById("specialisations_box").appendChild(newline.cloneNode());
+                      let label2 = document.createElement("label");
+                      let textbox2 = document.createElement("input");
+                      label2.innerText = "Skill Level";
+                      textbox2.setAttribute("type", "number");
+                      document.getElementById("specialisations_box").appendChild(label2);
+                      document.getElementById("specialisations_box").appendChild(textbox2);
+                      document.getElementById("specialisations_box").appendChild(newline.cloneNode());
+                      document.getElementById("specialisations_box").appendChild(newline.cloneNode());
+                      // Bad practice but I'm in a hurry.
+
+                      /*document.getElementById("specialisations_box").innerHTML += `
+
+      <label>Specialisation</label>
+      <input type="text"><br><br>
+      <label>Skill Level</label>
+      <input type="number"><br><br>
+
+     `;*/
+                    });
+            };
+    </script>
   </head>
   <body>
     <h1>Test</h1>
     <p>Paragraph</p>
+    <!-- Might be worth looking into having a bunch of checkboxes ranging from 0 to 10 instead of entering a number-->
+    <div id="specialisations_box">
+      <input id="add_more" type="button" value="Add More"><br><br>
+      <input id="get_radar" type="button" value="Get Radar Chart"><br><br>
+      <label>Specialisation</label>
+      <input type="text"><br><br>
+      <label>Skill Level</label>
+      <input type="number"><br><br>
+    </div>
+
   </body>
 </html>

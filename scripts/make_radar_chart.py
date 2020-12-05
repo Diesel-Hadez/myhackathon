@@ -1,6 +1,3 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-
 import matplotlib.pyplot as plt
 import pandas as pd
 from math import pi
@@ -26,27 +23,7 @@ def make_radar_chart(lst, filename=""):
 
     if filename:
         plt.savefig(filename)
-        plt.clf()
     else:
-        import io
-        ret = io.BytesIO()
-        plt.savefig(ret, format='png')
-        plt.clf()
-        ret.seek(0)
-        return ret.read()
+        plt.show()
 
 
-
-# Should probably put this in a separate file
-# Or import from root
-
-# Create your views here.
-def index(request):
-    return render(request, 'index.html', context={})
-
-import json
-from django.http import JsonResponse
-def radar_chart(request):
-    lst = [(name, float(data.strip())) for name, data in json.loads(request.GET['data']).items()]
-    data = make_radar_chart(lst)
-    return HttpResponse(data, "image/png")
