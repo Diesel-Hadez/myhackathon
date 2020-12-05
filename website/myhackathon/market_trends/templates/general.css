@@ -1,0 +1,17 @@
+html,body{
+    background: linear-gradient(to bottom, #4fd19f, #aadde5);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height:100%;
+    margin:0
+}
+#specialisations_box{
+    padding:20px;
+}
+.container{
+    background: #ffffff;
+}
+
+input{
+    padding:5px
+}
