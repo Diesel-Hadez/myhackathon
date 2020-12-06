@@ -7,6 +7,18 @@
   <link rel="stylesheet" href="general.css">
 	<script>
       window.onload = function() {
+              document.getElementById("resume_extract").addEventListener('click', function(){
+                    let data = document.getElementById("input_resume").value;
+                    let httpRequest = new XMLHttpRequest();
+                    httpRequest.onreadystatechange = function(){
+                          if (httpRequest.readyState === XMLHttpRequest.DONE){
+                                alert(httpRequest.responseText);
+                                
+                              }};
+                    
+                    httpRequest.open('GET', "keyword_extract?resume=" + data);
+                    httpRequest.send();
+                  });
               document.getElementById("get_resume").addEventListener('click', function(){
                     let name = document.getElementById("person_name").value;
                     let work_exp = document.getElementById("person_work_experience").value;
@@ -30,7 +42,6 @@
                                       }
                                 }
                             }
-                    alert(ret);
                     let httpRequest = new XMLHttpRequest();
                     httpRequest.onreadystatechange = function(){
                           if (httpRequest.readyState === XMLHttpRequest.DONE){
@@ -136,6 +147,18 @@
   would need users first to use the site to get that data.
 
     </p>
+    <h1 class="display-4">Keyword Extractor</h1>
+    <p>
+      Pretty self=explanatory, it extracts certain keywords it deems important from a database (again, this has to be
+      pre-configured by the owner of the site, so there is work to be done for them to research what is a current "trendy keyword",
+      though the previous section may help with that), it's use case is simply to save the user some trouble, as instead of filling up
+      a form of their specialisations, they can paste their existing resume in and extract data. May not be perfect, but it's a starting
+      point that will save them time.
+    </p>
+    <div class="container">
+        <input id="resume_extract" class="btn btn-primary" type="button" value="Extract Data"><br><br>
+      <textarea class="form-control" id="input_resume"></textarea>
+    </div>
     <h1 class="display-4">Skill Recommendation Expert System</h1>
     <p>
       Say a job-seeker wants to become a web developer, and is looking at ways to become one.

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from math import pi
 
+
 def make_radar_chart(lst, filename=""):
     categories = []
     values = []
@@ -35,6 +36,7 @@ def make_radar_chart(lst, filename=""):
         ret.seek(0)
         return ret.read()
 
+
 def resume_creator(profile):
     """
     Create a short user description from template
@@ -48,7 +50,8 @@ def resume_creator(profile):
     expertise = ", ".join(expertise)
     work_exp = ", ".join(work_exp)
     template = "My name is {}. My expertise are in {}. My work experience include {}"
-    return template.format(name,expertise,work_exp)
+    return template.format(name, expertise, work_exp)
+
 
 def my_resume(request):
     name = request.GET['name']
@@ -62,18 +65,24 @@ def my_resume(request):
 # Should probably put this in a separate file
 # Or import from root
 
+
 # Create your views here.
 def index(request):
     return render(request, 'index.html', context={})
 
+
 import json
 from django.http import JsonResponse
+
+
 def radar_chart(request):
-    lst = [(name, float(data.strip())) for name, data in json.loads(request.GET['data']).items()]
+    lst = [(name, float(data.strip()))
+           for name, data in json.loads(request.GET['data']).items()]
     data = make_radar_chart(lst)
     return HttpResponse(data, "image/png")
 
-def make_line_chart(lst,title="", filename=""):
+
+def make_line_chart(lst, title="", filename=""):
     plt.title(title)
     plt.plot([_ for _ in range(len(lst))], lst)
     if filename:
@@ -87,6 +96,7 @@ def make_line_chart(lst,title="", filename=""):
         ret.seek(0)
         return ret.read()
 
+
 def line_chart(request):
     lst = request.GET.getlist('data[]')
     lst = [float(x.strip()) for x in lst]
@@ -94,13 +104,16 @@ def line_chart(request):
     data = make_line_chart(lst, title)
     return HttpResponse(data, "image/png")
 
+
 import enum
 import uuid
+
 
 class NodeType(enum.Enum):
     SKILL = 1
     AND = 2
     OR = 3
+
 
 class Node:
     def __init__(self, label, type=NodeType.SKILL, fulfilled=False):
@@ -109,11 +122,14 @@ class Node:
         self.uuid = uuid.uuid4().int
         self.parents = []
         self.fulfilled = False
+
     def add_parent(self, node):
         if node not in self.parents:
             self.parents.append(node)
+
     def set_fulfilled(self):
         self.fulfilled = True
+
     def __repr__(self):
         return self.label
 
@@ -142,7 +158,6 @@ def parents_till_needed(node):
     return ret
 
 
-
 def parents_till_fulfilled(node, miu=False):
     if node.fulfilled:
         return []
@@ -168,16 +183,26 @@ def parents_till_fulfilled(node, miu=False):
             ret.append(parent)
     return ret
 
+
 def fulfill_skills(my_skills, skilltree):
     for x in skilltree:
         if x.label in my_skills:
             x.set_fulfilled()
+
+
 def more_needed_for_job(my_skills, skill_wanted, skilltree):
     fulfill_skills(my_skills, skilltree)
     return parents_till_fulfilled(skill_wanted)
 
+
 def job_parse(request):
-    web_dev = [Node("JS"), Node("HTML"), Node("Phoenix"), Node("NodeJS"), Node("php")]
+    web_dev = [
+        Node("JS"),
+        Node("HTML"),
+        Node("Phoenix"),
+        Node("NodeJS"),
+        Node("php")
+    ]
     lst = request.GET.getlist('data[]')
     for i in lst:
         for x in web_dev:
@@ -209,3 +234,44 @@ def job_parse(request):
         ret += " and "
     ret = ret[:-5]
     return HttpResponse(ret)
+
+
+def txt_to_list(keyword, fname):
+    """
+    Return text in a .txt file as a string
+    """
+    with open(fname, 'r') as f:
+        ret_str = f.read()
+    return ret_str
+
+
+def keywords_in_str(keywords_lst, text):
+    """
+    Finds all keywords in a text string
+    
+    Args:
+        keywords_lst: A list of keywords to search in text
+        text: A string
+    Returns:
+        A list of capitalized strings for all keywords found in text.
+
+    References:
+    https://medium.com/quantrium-tech/extracting-words-from-a-string-in-python-using-regex-dac4b385c1b8
+    https://docs.python.org/3/library/re.html
+    https://docs.python.org/3/library/string.html#string.capwords
+    """
+    import re, string
+    keywords = '|'.join(keywords_lst)
+    found_lst = re.findall(keywords, text, flags=re.IGNORECASE)
+    found_lst = set(map(string.capwords, found_lst))
+    return list(found_lst)
+
+def keywword_search(request):
+    resume = request.GET['resume']
+    # Can easily be from a file too using
+    # the txt_to_list function
+    # Here I use hard-coded samples
+    keywords = keywords_in_str(["Big Data", "Blockchain"], resume)
+    if len(keywords) == 0:
+        return HttpResponse("No keywords!")
+    return HttpResponse("Found keywords: " + ','.join(keywords))
