@@ -35,6 +35,28 @@ def make_radar_chart(lst, filename=""):
         ret.seek(0)
         return ret.read()
 
+def resume_creator(profile):
+    """
+    Create a short user description from template
+
+    Args:
+        profile: A list containg user's name, list of expertise and list of work experience
+    Returns:
+        A string with the profile description
+    """
+    name, expertise, work_exp = profile
+    expertise = ", ".join(expertise)
+    work_exp = ", ".join(work_exp)
+    template = "My name is {}. My expertise are in {}. My work experience include {}"
+    return template.format(name,expertise,work_exp)
+
+def my_resume(request):
+    name = request.GET['name']
+    work_exp = request.GET['work_exp']
+    expertise = request.GET['expertise']
+
+    # Can do it as a list too but for the presentation I need to get it done
+    return HttpResponse(resume_creator((name, [expertise], [work_exp])))
 
 
 # Should probably put this in a separate file

@@ -7,6 +7,20 @@
   <link rel="stylesheet" href="general.css">
 	<script>
       window.onload = function() {
+              document.getElementById("get_resume").addEventListener('click', function(){
+                    let name = document.getElementById("person_name").value;
+                    let work_exp = document.getElementById("person_work_experience").value;
+                    let expertise = document.getElementById("person_expertise").value;
+                    let httpRequest = new XMLHttpRequest();
+                    httpRequest.onreadystatechange = function(){
+                          if (httpRequest.readyState === XMLHttpRequest.DONE){
+                document.getElementById("created_resume").innerText = httpRequest.responseText;
+                                
+                              }};
+                    
+                    httpRequest.open('GET', "my_resume?name=" + name + "&work_exp=" + work_exp + "&expertise=" + expertise);
+                    httpRequest.send();
+                  });
               document.getElementById("viable_check").addEventListener('click', function(){
                     ret = "skills_for_job?"
                       for (i of document.getElementsByTagName("input")) {
@@ -173,6 +187,23 @@
         php
       </label>
     </div>
+      </div>
+      <h1 class="display-4"> Resume Creator</h1>
+      <p>Simple Resume Creator, In future likely have templates to choose from. Of course, the job-seeker should personalise it
+      themselves, but it can provide a starting-point so they don't feel overwhelmed in where to start.</p>
+      <div class="container">
+        <input id="get_resume" class="btn btn-primary" type="button" value="Name"><br><br>
+        <label>Name</label><br>
+        <input id="person_name" type="text">
+      <br><br>
+      <label>Expertise</label><br>
+        <input id="person_expertise" type="text">
+      <br><br>
+      <label>Work Experience</label><br>
+        <input id="person_work_experience" type="text">
+      <br><br>
+      <h2>Resume: </h2>
+      <p id="created_resume"></p> 
       </div>
     <h1 class="display-4">Radar chart</h1>
     <p>
