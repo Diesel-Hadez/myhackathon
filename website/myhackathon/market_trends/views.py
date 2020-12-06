@@ -50,3 +50,24 @@ def radar_chart(request):
     lst = [(name, float(data.strip())) for name, data in json.loads(request.GET['data']).items()]
     data = make_radar_chart(lst)
     return HttpResponse(data, "image/png")
+
+def make_line_chart(lst,title="", filename=""):
+    plt.title(title)
+    plt.plot([_ for _ in range(len(lst))], lst)
+    if filename:
+        plt.savefig(filename)
+        plt.clf()
+    else:
+        import io
+        ret = io.BytesIO()
+        plt.savefig(ret, format='png')
+        plt.clf()
+        ret.seek(0)
+        return ret.read()
+
+def line_chart(request):
+    lst = request.GET.getlist('data[]')
+    lst = [float(x.strip()) for x in lst]
+    title = request.GET['title']
+    data = make_line_chart(lst, title)
+    return HttpResponse(data, "image/png")
